@@ -14,4 +14,7 @@ public class AccountRole
     [Column("role_id")]
     public int RoleId { get; set; }
 
+    //Cardinality
+    public Account Account { get; set; }
+    public Role Role { get; set; }
 }

@@ -16,6 +16,10 @@ public class Education
     [Column("gpa", TypeName = "varchar(5)")]
     public string GPA { get; set; }
     [Column("university_id")]
-    public int UniversityId { get; set; }
+    public int? UniversityId { get; set; }
+
+    //Cardinality
+    public University University { get; set; }
+    public Profiling Profiling { get; set; }
 
 }

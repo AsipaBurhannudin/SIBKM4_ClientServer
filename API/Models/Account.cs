@@ -11,4 +11,9 @@ public class Account
     [Column("password")]
     public string password { get; set; }
 
+    //Cardinality
+    public ICollection<AccountRole> AccountRoles { get; set; }
+    public Employee Employee { get; set; }
+
+
 }
