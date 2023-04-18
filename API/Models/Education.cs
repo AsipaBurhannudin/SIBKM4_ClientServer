@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace API.Models;
 
@@ -19,7 +20,9 @@ public class Education
     public int? UniversityId { get; set; }
 
     //Cardinality
-    public University University { get; set; }
-    public Profiling Profiling { get; set; }
+    [JsonIgnore]
+    public University? University { get; set; }
+    [JsonIgnore]
+    public Profiling? Profiling { get; set; }
 
 }

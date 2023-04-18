@@ -2,6 +2,8 @@
 using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
 using System.Reflection;
+using System.Text.Json.Serialization;
+
 namespace API.Models;
 
 [Table("tb_m_employees")]
@@ -25,8 +27,10 @@ public class Employee
     public string PhoneNumber { get; set; }
 
     //Cardinality
-    public Profiling Profiling { get; set; }
-    public Account Account { get; set; }
+    [JsonIgnore]
+    public Profiling? Profiling { get; set; }
+    [JsonIgnore]
+    public Account? Account { get; set; }
 }
 public enum Gender
 {

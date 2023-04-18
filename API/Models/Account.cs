@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace API.Models;
 [Table("tb_m_accounts")]
@@ -12,8 +13,10 @@ public class Account
     public string password { get; set; }
 
     //Cardinality
-    public ICollection<AccountRole> AccountRoles { get; set; }
-    public Employee Employee { get; set; }
+    [JsonIgnore]
+    public ICollection<AccountRole>? AccountRoles { get; set; }
+    [JsonIgnore]
+    public Employee? Employee { get; set; }
 
 
 }
