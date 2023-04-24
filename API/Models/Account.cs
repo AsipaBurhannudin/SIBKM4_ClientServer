@@ -17,6 +17,8 @@ public class Account
     public ICollection<AccountRole>? AccountRoles { get; set; }
     [JsonIgnore]
     public Employee? Employee { get; set; }
+    [JsonIgnore]
+    public Profiling? Profiling { get; set; }
 
 
 }

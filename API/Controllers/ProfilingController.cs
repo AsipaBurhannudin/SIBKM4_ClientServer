@@ -9,53 +9,55 @@ namespace API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class UniversityController : ControllerBase
+    public class ProfilingController : ControllerBase
     {
-        private readonly IUniversityRepository _universityRepository;
-        public UniversityController(IUniversityRepository universityRepository)
+        private readonly IProfilingRepository _profilingRepository;
+        public ProfilingController(IProfilingRepository profilingRepository)
         {
-            _universityRepository = universityRepository;
+            _profilingRepository = profilingRepository;
         }
 
         [HttpGet]
         public ActionResult GetAll()
         {
-            var universities = _universityRepository.GetAll();
+            var profilings = _profilingRepository.GetAll();
             // Handle ketika data tidak ada / kosong
 
-            return Ok(new ResponseDataVM<IEnumerable<University>>
+            return Ok(new ResponseDataVM<IEnumerable<Profiling>>
             {
                 Code = StatusCodes.Status200OK,
                 Status = HttpStatusCode.OK.ToString(),
                 Message = "Success",
-                Data = universities
+                Data = profilings
             });
         }
+
         [HttpGet("{id}")]
-        public ActionResult GetById(int id)
+        public ActionResult GetById(string id)
         {
-            var university = _universityRepository.GetById(id);
-            if (university == null)
+            var profiling = _profilingRepository.GetById(id);
+            if (profiling == null)
             {
                 return NotFound(new ResponseErrorsVM<string>
                 {
                     Code = StatusCodes.Status404NotFound,
                     Status = HttpStatusCode.NotFound.ToString(),
-                    Errors = "Id Not Found"
+                    Errors = "Data not found"
                 });
             }
-             return Ok(new ResponseDataVM<University>
-                {
-                    Code = StatusCodes.Status200OK,
-                    Status = HttpStatusCode.OK.ToString(),
-                    Message = "Success",
-                    Data = university
-                });
-            }
+            return Ok(new ResponseDataVM<Profiling>
+            {
+                Code = StatusCodes.Status200OK,
+                Status = HttpStatusCode.OK.ToString(),
+                Message = "Success",
+                Data = profiling
+            });
+        }
+
         [HttpPost]
-        public ActionResult Insert(University university)
+        public ActionResult Insert(Profiling profiling)
         {
-            if (university.Name == "" || university.Name.ToLower() == "string")
+            if (profiling.EmployeeNIK == "" || profiling.EmployeeNIK.ToLower() == "string")
             {
                 return BadRequest(new ResponseErrorsVM<string>
                 {
@@ -64,9 +66,9 @@ namespace API.Controllers
                     Errors = "Value Cannot be Null or Default"
                 });
             }
-            var insert = _universityRepository.Insert(university);
+            var insert = _profilingRepository.Insert(profiling);
             if (insert > 0)
-                return Ok(new ResponseDataVM<University>
+                return Ok(new ResponseDataVM<Profiling>
                 {
                     Code = StatusCodes.Status200OK,
                     Status = HttpStatusCode.OK.ToString(),
@@ -81,9 +83,9 @@ namespace API.Controllers
             });
         }
         [HttpPut]
-        public ActionResult Update(University university)
+        public ActionResult Update(Profiling profiling)
         {
-            if (university.Name =="" || university.Name.ToLower() == "string")
+          if (profiling.EmployeeNIK == "" || profiling.EmployeeNIK.ToLower() == "string")
             {
                 return BadRequest(new ResponseErrorsVM<string>
                 {
@@ -93,8 +95,8 @@ namespace API.Controllers
                 });
             }
 
-            var update = _universityRepository.Update(university);
-            if (update > 0) return Ok(new ResponseDataVM<University>
+            var update = _profilingRepository.Update(profiling);
+            if (update > 0) return Ok(new ResponseDataVM<Profiling>
             {
                 Code = StatusCodes.Status200OK,
                 Status = HttpStatusCode.OK.ToString(),
@@ -109,26 +111,54 @@ namespace API.Controllers
                 Errors = "Update Failed / Lost Connection"
             });
         }
+
         [HttpDelete("{id}")]
-        public ActionResult Delete (int id)
+        public ActionResult Delete(string id)
         {
-            var delete = _universityRepository.Delete(id);
+            // Check if the ID is valid
+            if (string.IsNullOrEmpty(id))
+            {
+                return BadRequest(new ResponseErrorsVM<string>
+                {
+                    Code = StatusCodes.Status400BadRequest,
+                    Status = HttpStatusCode.BadRequest.ToString(),
+                    Errors = "Invalid ID"
+                });
+            }
+
+            // Check if the object exists
+            var profiling = _profilingRepository.GetById(id);
+            if (profiling == null)
+            {
+                return NotFound(new ResponseErrorsVM<string>
+                {
+                    Code = StatusCodes.Status404NotFound,
+                    Status = HttpStatusCode.NotFound.ToString(),
+                    Errors = "Object Not Found"
+                });
+            }
+
+            // Delete the object
+            var delete = _profilingRepository.Delete(id);
             if (delete > 0)
-                return Ok(new ResponseDataVM<University>
+            {
+                return Ok(new ResponseDataVM<Profiling>
                 {
                     Code = StatusCodes.Status200OK,
                     Status = HttpStatusCode.OK.ToString(),
                     Message = "Delete Success",
                     Data = null
                 });
-
-            return BadRequest(new ResponseErrorsVM<string>
+            }
+            else
             {
-                Code = StatusCodes.Status500InternalServerError,
-                Status = HttpStatusCode.InternalServerError.ToString(),
-                Errors = "Delete Failed / Lost Connection"
-            });
+                return BadRequest(new ResponseErrorsVM<string>
+                {
+                    Code = StatusCodes.Status400BadRequest,
+                    Status = HttpStatusCode.BadRequest.ToString(),
+                    Errors = "Delete Failed / Lost Connection"
+                });
+            }
         }
-        }
-
     }
+}

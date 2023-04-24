@@ -28,8 +28,6 @@ public class Employee
 
     //Cardinality
     [JsonIgnore]
-    public Profiling? Profiling { get; set; }
-    [JsonIgnore]
     public Account? Account { get; set; }
 }
 public enum Gender

@@ -9,33 +9,33 @@ namespace API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class UniversityController : ControllerBase
+    public class RoleController : ControllerBase
     {
-        private readonly IUniversityRepository _universityRepository;
-        public UniversityController(IUniversityRepository universityRepository)
+        private readonly IRoleRepository _roleRepository;
+        public RoleController(IRoleRepository roleRepository)
         {
-            _universityRepository = universityRepository;
+            _roleRepository = roleRepository;
         }
 
         [HttpGet]
         public ActionResult GetAll()
         {
-            var universities = _universityRepository.GetAll();
+            var roles = _roleRepository.GetAll();
             // Handle ketika data tidak ada / kosong
 
-            return Ok(new ResponseDataVM<IEnumerable<University>>
+            return Ok(new ResponseDataVM<IEnumerable<Role>>
             {
                 Code = StatusCodes.Status200OK,
                 Status = HttpStatusCode.OK.ToString(),
                 Message = "Success",
-                Data = universities
+                Data = roles
             });
         }
         [HttpGet("{id}")]
         public ActionResult GetById(int id)
         {
-            var university = _universityRepository.GetById(id);
-            if (university == null)
+            var roles = _roleRepository.GetById(id);
+            if (roles == null)
             {
                 return NotFound(new ResponseErrorsVM<string>
                 {
@@ -44,18 +44,18 @@ namespace API.Controllers
                     Errors = "Id Not Found"
                 });
             }
-             return Ok(new ResponseDataVM<University>
-                {
-                    Code = StatusCodes.Status200OK,
-                    Status = HttpStatusCode.OK.ToString(),
-                    Message = "Success",
-                    Data = university
-                });
-            }
+            return Ok(new ResponseDataVM<Role>
+            {
+                Code = StatusCodes.Status200OK,
+                Status = HttpStatusCode.OK.ToString(),
+                Message = "Success",
+                Data = roles
+            });
+        }
         [HttpPost]
-        public ActionResult Insert(University university)
+        public ActionResult Insert(Role role)
         {
-            if (university.Name == "" || university.Name.ToLower() == "string")
+            if (role.Name == "" || role.Name.ToLower() == "string")
             {
                 return BadRequest(new ResponseErrorsVM<string>
                 {
@@ -64,9 +64,9 @@ namespace API.Controllers
                     Errors = "Value Cannot be Null or Default"
                 });
             }
-            var insert = _universityRepository.Insert(university);
+            var insert = _roleRepository.Insert(role);
             if (insert > 0)
-                return Ok(new ResponseDataVM<University>
+                return Ok(new ResponseDataVM<Role>
                 {
                     Code = StatusCodes.Status200OK,
                     Status = HttpStatusCode.OK.ToString(),
@@ -81,9 +81,9 @@ namespace API.Controllers
             });
         }
         [HttpPut]
-        public ActionResult Update(University university)
+        public ActionResult Update(Role role)
         {
-            if (university.Name =="" || university.Name.ToLower() == "string")
+            if (role.Name == "" || role.Name.ToLower() == "string")
             {
                 return BadRequest(new ResponseErrorsVM<string>
                 {
@@ -93,7 +93,7 @@ namespace API.Controllers
                 });
             }
 
-            var update = _universityRepository.Update(university);
+            var update = _roleRepository.Update(role);
             if (update > 0) return Ok(new ResponseDataVM<University>
             {
                 Code = StatusCodes.Status200OK,
@@ -110,11 +110,11 @@ namespace API.Controllers
             });
         }
         [HttpDelete("{id}")]
-        public ActionResult Delete (int id)
+        public ActionResult Delete(int id)
         {
-            var delete = _universityRepository.Delete(id);
+            var delete = _roleRepository.Delete(id);
             if (delete > 0)
-                return Ok(new ResponseDataVM<University>
+                return Ok(new ResponseDataVM<Role>
                 {
                     Code = StatusCodes.Status200OK,
                     Status = HttpStatusCode.OK.ToString(),
@@ -129,6 +129,5 @@ namespace API.Controllers
                 Errors = "Delete Failed / Lost Connection"
             });
         }
-        }
-
     }
+}

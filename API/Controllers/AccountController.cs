@@ -9,53 +9,56 @@ namespace API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class UniversityController : ControllerBase
+    public class AccountController : ControllerBase
     {
-        private readonly IUniversityRepository _universityRepository;
-        public UniversityController(IUniversityRepository universityRepository)
+        private readonly IAccountRepository _accountRepository;
+        public AccountController(IAccountRepository accountRepository)
         {
-            _universityRepository = universityRepository;
+            _accountRepository = accountRepository;
         }
 
         [HttpGet]
         public ActionResult GetAll()
         {
-            var universities = _universityRepository.GetAll();
+            var accounts = _accountRepository.GetAll();
             // Handle ketika data tidak ada / kosong
 
-            return Ok(new ResponseDataVM<IEnumerable<University>>
+            return Ok(new ResponseDataVM<IEnumerable<Account>>
             {
                 Code = StatusCodes.Status200OK,
                 Status = HttpStatusCode.OK.ToString(),
                 Message = "Success",
-                Data = universities
+                Data = accounts
             });
         }
+
         [HttpGet("{id}")]
-        public ActionResult GetById(int id)
+        public ActionResult GetById(string id)
         {
-            var university = _universityRepository.GetById(id);
-            if (university == null)
+            var account = _accountRepository.GetById(id);
+            if (account == null)
             {
                 return NotFound(new ResponseErrorsVM<string>
                 {
                     Code = StatusCodes.Status404NotFound,
                     Status = HttpStatusCode.NotFound.ToString(),
-                    Errors = "Id Not Found"
+                    Errors = "Account not found"
                 });
             }
-             return Ok(new ResponseDataVM<University>
-                {
-                    Code = StatusCodes.Status200OK,
-                    Status = HttpStatusCode.OK.ToString(),
-                    Message = "Success",
-                    Data = university
-                });
-            }
+
+            return Ok(new ResponseDataVM<Account>
+            {
+                Code = StatusCodes.Status200OK,
+                Status = HttpStatusCode.OK.ToString(),
+                Message = "Success",
+                Data = account
+            });
+        }
+
         [HttpPost]
-        public ActionResult Insert(University university)
+        public ActionResult Insert(Account account)
         {
-            if (university.Name == "" || university.Name.ToLower() == "string")
+            if (account.EmployeeNIK == "" || account.EmployeeNIK.ToLower() == "string")
             {
                 return BadRequest(new ResponseErrorsVM<string>
                 {
@@ -64,9 +67,9 @@ namespace API.Controllers
                     Errors = "Value Cannot be Null or Default"
                 });
             }
-            var insert = _universityRepository.Insert(university);
+            var insert = _accountRepository.Insert(account);
             if (insert > 0)
-                return Ok(new ResponseDataVM<University>
+                return Ok(new ResponseDataVM<Account>
                 {
                     Code = StatusCodes.Status200OK,
                     Status = HttpStatusCode.OK.ToString(),
@@ -81,9 +84,9 @@ namespace API.Controllers
             });
         }
         [HttpPut]
-        public ActionResult Update(University university)
+        public ActionResult Update(Account account)
         {
-            if (university.Name =="" || university.Name.ToLower() == "string")
+            if (account.EmployeeNIK == "" || account.EmployeeNIK.ToLower() == "string")
             {
                 return BadRequest(new ResponseErrorsVM<string>
                 {
@@ -93,8 +96,8 @@ namespace API.Controllers
                 });
             }
 
-            var update = _universityRepository.Update(university);
-            if (update > 0) return Ok(new ResponseDataVM<University>
+            var update = _accountRepository.Update(account);
+            if (update > 0) return Ok(new ResponseDataVM<Account>
             {
                 Code = StatusCodes.Status200OK,
                 Status = HttpStatusCode.OK.ToString(),
@@ -109,26 +112,41 @@ namespace API.Controllers
                 Errors = "Update Failed / Lost Connection"
             });
         }
+
         [HttpDelete("{id}")]
-        public ActionResult Delete (int id)
+        public ActionResult Delete(string id)
         {
-            var delete = _universityRepository.Delete(id);
+            var account = _accountRepository.GetById(id);
+
+            if (account == null)
+            {
+                return NotFound(new ResponseErrorsVM<string>
+                {
+                    Code = StatusCodes.Status404NotFound,
+                    Status = HttpStatusCode.NotFound.ToString(),
+                    Errors = "Account Not Found"
+                });
+            }
+
+            var delete = _accountRepository.Delete(account);
+
             if (delete > 0)
-                return Ok(new ResponseDataVM<University>
+            {
+                return Ok(new ResponseDataVM<Account>
                 {
                     Code = StatusCodes.Status200OK,
                     Status = HttpStatusCode.OK.ToString(),
                     Message = "Delete Success",
                     Data = null
                 });
+            }
 
             return BadRequest(new ResponseErrorsVM<string>
             {
-                Code = StatusCodes.Status500InternalServerError,
-                Status = HttpStatusCode.InternalServerError.ToString(),
+                Code = StatusCodes.Status400BadRequest,
+                Status = HttpStatusCode.BadRequest.ToString(),
                 Errors = "Delete Failed / Lost Connection"
             });
         }
-        }
-
     }
+}

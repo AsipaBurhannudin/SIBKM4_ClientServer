@@ -9,53 +9,55 @@ namespace API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class UniversityController : ControllerBase
+    public class AccountRoleController : ControllerBase
     {
-        private readonly IUniversityRepository _universityRepository;
-        public UniversityController(IUniversityRepository universityRepository)
+        private readonly IAccountRoleRepository _accountRoleRepository;
+        public AccountRoleController(IAccountRoleRepository accountRoleRepository)
         {
-            _universityRepository = universityRepository;
+            _accountRoleRepository = accountRoleRepository;
         }
 
         [HttpGet]
         public ActionResult GetAll()
         {
-            var universities = _universityRepository.GetAll();
+            var accountRole = _accountRoleRepository.GetAll();
             // Handle ketika data tidak ada / kosong
 
-            return Ok(new ResponseDataVM<IEnumerable<University>>
+            return Ok(new ResponseDataVM<IEnumerable<AccountRole>>
             {
                 Code = StatusCodes.Status200OK,
                 Status = HttpStatusCode.OK.ToString(),
                 Message = "Success",
-                Data = universities
+                Data = accountRole
             });
         }
+
         [HttpGet("{id}")]
         public ActionResult GetById(int id)
         {
-            var university = _universityRepository.GetById(id);
-            if (university == null)
+            var accountRole = _accountRoleRepository.GetById(id);
+            if (accountRole == null)
             {
                 return NotFound(new ResponseErrorsVM<string>
                 {
                     Code = StatusCodes.Status404NotFound,
                     Status = HttpStatusCode.NotFound.ToString(),
-                    Errors = "Id Not Found"
+                    Errors = "Data not found"
                 });
             }
-             return Ok(new ResponseDataVM<University>
-                {
-                    Code = StatusCodes.Status200OK,
-                    Status = HttpStatusCode.OK.ToString(),
-                    Message = "Success",
-                    Data = university
-                });
-            }
+            return Ok(new ResponseDataVM<AccountRole>
+            {
+                Code = StatusCodes.Status200OK,
+                Status = HttpStatusCode.OK.ToString(),
+                Message = "Success",
+                Data = accountRole
+            });
+        }
+
         [HttpPost]
-        public ActionResult Insert(University university)
+        public ActionResult Insert(AccountRole accountRole)
         {
-            if (university.Name == "" || university.Name.ToLower() == "string")
+            if (accountRole.AccountNIK == "" || accountRole.AccountNIK.ToLower() == "string")
             {
                 return BadRequest(new ResponseErrorsVM<string>
                 {
@@ -64,9 +66,9 @@ namespace API.Controllers
                     Errors = "Value Cannot be Null or Default"
                 });
             }
-            var insert = _universityRepository.Insert(university);
+            var insert = _accountRoleRepository.Insert(accountRole);
             if (insert > 0)
-                return Ok(new ResponseDataVM<University>
+                return Ok(new ResponseDataVM<AccountRole>
                 {
                     Code = StatusCodes.Status200OK,
                     Status = HttpStatusCode.OK.ToString(),
@@ -81,9 +83,9 @@ namespace API.Controllers
             });
         }
         [HttpPut]
-        public ActionResult Update(University university)
+        public ActionResult Update(AccountRole accountRole)
         {
-            if (university.Name =="" || university.Name.ToLower() == "string")
+            if (accountRole.AccountNIK == "" || accountRole.AccountNIK.ToLower() == "string")
             {
                 return BadRequest(new ResponseErrorsVM<string>
                 {
@@ -93,8 +95,8 @@ namespace API.Controllers
                 });
             }
 
-            var update = _universityRepository.Update(university);
-            if (update > 0) return Ok(new ResponseDataVM<University>
+            var update = _accountRoleRepository.Update(accountRole);
+            if (update > 0) return Ok(new ResponseDataVM<AccountRole>
             {
                 Code = StatusCodes.Status200OK,
                 Status = HttpStatusCode.OK.ToString(),
@@ -109,26 +111,38 @@ namespace API.Controllers
                 Errors = "Update Failed / Lost Connection"
             });
         }
+
+
         [HttpDelete("{id}")]
-        public ActionResult Delete (int id)
+        public ActionResult Delete(int id)
         {
-            var delete = _universityRepository.Delete(id);
+            var accountRole = _accountRoleRepository.GetById(id);
+            if (accountRole == null)
+            {
+                return BadRequest(new ResponseErrorsVM<string>
+                {
+                    Code = StatusCodes.Status400BadRequest,
+                    Status = HttpStatusCode.BadRequest.ToString(),
+                    Errors = "Data Not Found"
+                });
+            }
+            var delete = _accountRoleRepository.Delete(id);
             if (delete > 0)
-                return Ok(new ResponseDataVM<University>
+            {
+                return Ok(new ResponseDataVM<AccountRole>
                 {
                     Code = StatusCodes.Status200OK,
                     Status = HttpStatusCode.OK.ToString(),
                     Message = "Delete Success",
                     Data = null
                 });
-
+            }
             return BadRequest(new ResponseErrorsVM<string>
             {
-                Code = StatusCodes.Status500InternalServerError,
-                Status = HttpStatusCode.InternalServerError.ToString(),
+                Code = StatusCodes.Status400BadRequest,
+                Status = HttpStatusCode.BadRequest.ToString(),
                 Errors = "Delete Failed / Lost Connection"
             });
         }
-        }
-
     }
+}

@@ -16,5 +16,5 @@ public class Profiling
     [JsonIgnore]
     public Education? Education { get; set; }
     [JsonIgnore]
-    public Employee? Employee { get; set; }
+    public Account? Account { get; set; }
 }

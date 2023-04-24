@@ -37,14 +37,6 @@ public class MyContext : DbContext
                     .HasForeignKey<Profiling>(p => p.EducationId)
                     .OnDelete(DeleteBehavior.SetNull);
 
-        //One Profiling has one Employee
-        modelBuilder.Entity<Employee>()
-                    .HasOne(e => e.Profiling)
-                    .WithOne(p => p.Employee)
-                    .IsRequired(false)
-                    .HasForeignKey<Profiling>(p => p.EmployeeNIK)
-                    .OnDelete(DeleteBehavior.Restrict);
-
         //One Account has one Employee
         modelBuilder.Entity<Employee>()
                     .HasOne(e => e.Account)
@@ -53,23 +45,30 @@ public class MyContext : DbContext
                     .HasForeignKey<Account>(p => p.EmployeeNIK)
                     .OnDelete(DeleteBehavior.Restrict);
 
-        //One Account has many Account Roles
+        //One Profiling has one Account
         modelBuilder.Entity<Account>()
-                    .HasMany(e => e.AccountRoles)
-                    .WithOne(p => p.Account)
+                    .HasOne(p => p.Profiling)
+                    .WithOne(e => e.Account)
                     .IsRequired(false)
-                    .HasForeignKey(e => e.AccountNIK)
-                    .OnDelete(deleteBehavior: DeleteBehavior.Restrict);
-
-        //One Role has many Account Roles
-        modelBuilder.Entity<Role>()
-                    .HasMany(e => e.AccountRoles)
-                    .WithOne(p => p.Role)
-                    .IsRequired(false)
-                    .HasForeignKey(e => e.RoleId) 
+                    .HasForeignKey<Profiling>(e => e.EmployeeNIK)
                     .OnDelete(DeleteBehavior.Restrict);
-    }
+        
+        
+        modelBuilder.Entity<AccountRole>()
+                .HasKey(ar => ar.Id);
 
+        modelBuilder.Entity<AccountRole>()
+            .HasOne(ar => ar.Account)
+            .WithMany(a => a.AccountRoles)
+            .IsRequired(false)
+            .HasForeignKey(a => a.AccountNIK)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<AccountRole>()
+            .HasOne(ar => ar.Role)
+            .WithMany(r => r.AccountRoles)
+            .HasForeignKey(ar => ar.RoleId);
+    }
 }
 
 

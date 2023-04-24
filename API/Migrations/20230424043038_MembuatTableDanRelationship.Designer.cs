@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace API.Migrations
 {
     [DbContext(typeof(MyContext))]
-    [Migration("20230410044638_MembuatTable")]
-    partial class MembuatTable
+    [Migration("20230424043038_MembuatTableDanRelationship")]
+    partial class MembuatTableDanRelationship
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -217,12 +217,13 @@ namespace API.Migrations
                     b.HasOne("API.Models.Account", "Account")
                         .WithMany("AccountRoles")
                         .HasForeignKey("AccountNIK")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("API.Models.Role", "Role")
                         .WithMany("AccountRoles")
                         .HasForeignKey("RoleId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Account");
 
@@ -246,34 +247,32 @@ namespace API.Migrations
                         .HasForeignKey("API.Models.Profiling", "EducationId")
                         .OnDelete(DeleteBehavior.SetNull);
 
-                    b.HasOne("API.Models.Employee", "Employee")
+                    b.HasOne("API.Models.Account", "Account")
                         .WithOne("Profiling")
                         .HasForeignKey("API.Models.Profiling", "EmployeeNIK")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Account");
 
                     b.Navigation("Education");
-
-                    b.Navigation("Employee");
                 });
 
             modelBuilder.Entity("API.Models.Account", b =>
                 {
                     b.Navigation("AccountRoles");
+
+                    b.Navigation("Profiling");
                 });
 
             modelBuilder.Entity("API.Models.Education", b =>
                 {
-                    b.Navigation("Profiling")
-                        .IsRequired();
+                    b.Navigation("Profiling");
                 });
 
             modelBuilder.Entity("API.Models.Employee", b =>
                 {
-                    b.Navigation("Account")
-                        .IsRequired();
-
-                    b.Navigation("Profiling")
-                        .IsRequired();
+                    b.Navigation("Account");
                 });
 
             modelBuilder.Entity("API.Models.Role", b =>

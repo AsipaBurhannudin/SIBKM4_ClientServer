@@ -1,31 +1,32 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
 namespace API.Migrations
 {
     /// <inheritdoc />
-    public partial class MembuatTable : Migration
+    public partial class MembuatTableDanRelationship : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "tb_m_accounts",
+                name: "tb_m_employees",
                 columns: table => new
                 {
-                    employee_nik = table.Column<string>(type: "char(5)", nullable: false),
-                    password = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    nik = table.Column<string>(type: "char(5)", nullable: false),
+                    first_name = table.Column<string>(type: "varchar(50)", nullable: false),
+                    last_name = table.Column<string>(type: "varchar(50)", nullable: true),
+                    birth_date = table.Column<DateTime>(type: "datetime", nullable: false),
+                    gender = table.Column<int>(type: "int", nullable: false),
+                    hiring_date = table.Column<DateTime>(type: "datetime", nullable: false),
+                    email = table.Column<string>(type: "varchar(50)", nullable: false),
+                    phone_number = table.Column<string>(type: "varchar(50)", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_tb_m_accounts", x => x.employee_nik);
-                    table.ForeignKey(
-                        name: "FK_tb_m_accounts_tb_m_employees_employee_nik",
-                        column: x => x.employee_nik,
-                        principalTable: "tb_m_employees",
-                        principalColumn: "nik",
-                        onDelete: ReferentialAction.Restrict);
+                    table.PrimaryKey("PK_tb_m_employees", x => x.nik);
                 });
 
             migrationBuilder.CreateTable(
@@ -55,28 +56,20 @@ namespace API.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "tb_tr_account_roles",
+                name: "tb_m_accounts",
                 columns: table => new
                 {
-                    id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    account_nik = table.Column<string>(type: "char(5)", nullable: false),
-                    role_id = table.Column<int>(type: "int", nullable: false)
+                    employee_nik = table.Column<string>(type: "char(5)", nullable: false),
+                    password = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_tb_tr_account_roles", x => x.id);
+                    table.PrimaryKey("PK_tb_m_accounts", x => x.employee_nik);
                     table.ForeignKey(
-                        name: "FK_tb_tr_account_roles_tb_m_accounts_account_nik",
-                        column: x => x.account_nik,
-                        principalTable: "tb_m_accounts",
-                        principalColumn: "employee_nik",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_tb_tr_account_roles_tb_m_roles_role_id",
-                        column: x => x.role_id,
-                        principalTable: "tb_m_roles",
-                        principalColumn: "id",
+                        name: "FK_tb_m_accounts_tb_m_employees_employee_nik",
+                        column: x => x.employee_nik,
+                        principalTable: "tb_m_employees",
+                        principalColumn: "nik",
                         onDelete: ReferentialAction.Restrict);
                 });
 
@@ -103,6 +96,32 @@ namespace API.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "tb_tr_account_roles",
+                columns: table => new
+                {
+                    id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    account_nik = table.Column<string>(type: "char(5)", nullable: false),
+                    role_id = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_tb_tr_account_roles", x => x.id);
+                    table.ForeignKey(
+                        name: "FK_tb_tr_account_roles_tb_m_accounts_account_nik",
+                        column: x => x.account_nik,
+                        principalTable: "tb_m_accounts",
+                        principalColumn: "employee_nik",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_tb_tr_account_roles_tb_m_roles_role_id",
+                        column: x => x.role_id,
+                        principalTable: "tb_m_roles",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "tb_tr_profilings",
                 columns: table => new
                 {
@@ -113,17 +132,17 @@ namespace API.Migrations
                 {
                     table.PrimaryKey("PK_tb_tr_profilings", x => x.employee_nik);
                     table.ForeignKey(
+                        name: "FK_tb_tr_profilings_tb_m_accounts_employee_nik",
+                        column: x => x.employee_nik,
+                        principalTable: "tb_m_accounts",
+                        principalColumn: "employee_nik",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
                         name: "FK_tb_tr_profilings_tb_m_educations_education_id",
                         column: x => x.education_id,
                         principalTable: "tb_m_educations",
                         principalColumn: "id",
                         onDelete: ReferentialAction.SetNull);
-                    table.ForeignKey(
-                        name: "FK_tb_tr_profilings_tb_m_employees_employee_nik",
-                        column: x => x.employee_nik,
-                        principalTable: "tb_m_employees",
-                        principalColumn: "nik",
-                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateIndex(
@@ -159,13 +178,16 @@ namespace API.Migrations
                 name: "tb_tr_profilings");
 
             migrationBuilder.DropTable(
-                name: "tb_m_accounts");
-
-            migrationBuilder.DropTable(
                 name: "tb_m_roles");
 
             migrationBuilder.DropTable(
+                name: "tb_m_accounts");
+
+            migrationBuilder.DropTable(
                 name: "tb_m_educations");
+
+            migrationBuilder.DropTable(
+                name: "tb_m_employees");
 
             migrationBuilder.DropTable(
                 name: "tb_m_universities");
