@@ -31,6 +31,7 @@ namespace API.Controllers
                 Data = educations
             });
         }
+
         [HttpGet("{id}")]
         public ActionResult GetById(int id)
         {
@@ -52,6 +53,7 @@ namespace API.Controllers
                 Data = educations
             });
         }
+
         [HttpPost]
         public ActionResult Insert(Education education)
         {
@@ -80,6 +82,7 @@ namespace API.Controllers
                 Errors = "Insert Failed / Lost Connection"
             });
         }
+
         [HttpPut]
         public ActionResult Update(Education education)
         {
@@ -109,6 +112,7 @@ namespace API.Controllers
                 Errors = "Update Failed / Lost Connection"
             });
         }
+
         [HttpDelete("{id}")]
         public ActionResult Delete(int id)
         {

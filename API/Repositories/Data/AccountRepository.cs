@@ -18,7 +18,7 @@ namespace API.Repositories.Data
             return _context.Set<Account>().ToList();
         }
 
-        public Account GetById(string employeeNIK)
+        public Account? GetById(string employeeNIK)
         {
             return _context.Set<Account>().FirstOrDefault(a => a.EmployeeNIK == employeeNIK);
         }

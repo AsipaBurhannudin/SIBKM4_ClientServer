@@ -82,6 +82,7 @@ namespace API.Controllers
                 Errors = "Insert Failed / Lost Connection"
             });
         }
+
         [HttpPut]
         public ActionResult Update(Profiling profiling)
         {
@@ -115,7 +116,7 @@ namespace API.Controllers
         [HttpDelete("{id}")]
         public ActionResult Delete(string id)
         {
-            // Check if the ID is valid
+            // Check apakah id nya ada
             if (string.IsNullOrEmpty(id))
             {
                 return BadRequest(new ResponseErrorsVM<string>
@@ -126,7 +127,7 @@ namespace API.Controllers
                 });
             }
 
-            // Check if the object exists
+            // Check apakah object nya ada
             var profiling = _profilingRepository.GetById(id);
             if (profiling == null)
             {
@@ -138,7 +139,7 @@ namespace API.Controllers
                 });
             }
 
-            // Delete the object
+            // Delete object
             var delete = _profilingRepository.Delete(id);
             if (delete > 0)
             {

@@ -17,7 +17,7 @@ namespace API.Repositories.Data
             return _context.Set<Employee>().ToList();
         }
 
-        public Employee GetById(string nik)
+        public Employee? GetById(string nik)
         {
             return _context.Employees.Include(e => e.NIK).Include(e => e.Account).SingleOrDefault(e => e.NIK == nik);
         }

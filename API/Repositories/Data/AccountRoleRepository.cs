@@ -18,9 +18,9 @@ namespace API.Repositories.Data
             return _context.Set<AccountRole>().ToList();
         }
 
-        public AccountRole GetById(int id)
+        public AccountRole? GetById(int id)
         {
-            return _context.Set<AccountRole>().FirstOrDefault(x => x.Id == id);
+            return _context.Set<AccountRole>().Find(id);
         }
 
         public int Insert(AccountRole accountRole)

@@ -18,7 +18,7 @@ namespace API.Repositories.Data
             return _context.Set<Profiling>().ToList();
         }
 
-        public Profiling GetById(string employeeNIK)
+        public Profiling? GetById(string employeeNIK)
         {
             return _context.Set<Profiling>().Find(employeeNIK);
         }

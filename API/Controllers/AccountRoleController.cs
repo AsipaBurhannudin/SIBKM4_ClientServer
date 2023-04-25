@@ -82,6 +82,7 @@ namespace API.Controllers
                 Errors = "Insert Failed / Lost Connection"
             });
         }
+
         [HttpPut]
         public ActionResult Update(AccountRole accountRole)
         {
@@ -111,7 +112,6 @@ namespace API.Controllers
                 Errors = "Update Failed / Lost Connection"
             });
         }
-
 
         [HttpDelete("{id}")]
         public ActionResult Delete(int id)
