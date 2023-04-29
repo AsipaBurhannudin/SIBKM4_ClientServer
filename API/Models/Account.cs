@@ -10,7 +10,7 @@ public class Account
     [Key, Column("employee_nik", TypeName ="char(5)")]
     public string EmployeeNIK { get; set; }
     [Column("password")]
-    public string password { get; set; }
+    public string Password { get; set; }
 
     //Cardinality
     [JsonIgnore]

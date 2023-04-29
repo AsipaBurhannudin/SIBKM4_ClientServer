@@ -1,4 +1,5 @@
-﻿using API.Models;
+﻿using API.Base;
+using API.Models;
 using API.Repositories.Interface;
 using API.ViewModels;
 using Microsoft.AspNetCore.Http;
@@ -9,143 +10,50 @@ namespace API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class AccountController : ControllerBase
+    public class AccountController : GeneralController<IAccountRepository, Account, string>
     {
-        private readonly IAccountRepository _accountRepository;
-        public AccountController(IAccountRepository accountRepository)
+        public AccountController(IAccountRepository repository) : base(repository)
         {
-            _accountRepository = accountRepository;
         }
-
-        [HttpGet]
-        public ActionResult GetAll()
+        [HttpPost("Login")]
+        public ActionResult Login(LoginVM loginVM)
         {
-            var accounts = _accountRepository.GetAll();
-            // Handle ketika data tidak ada / kosong
-
-            return Ok(new ResponseDataVM<IEnumerable<Account>>
+            var login = _repository.Login(loginVM);
+            if (login)
             {
-                Code = StatusCodes.Status200OK,
-                Status = HttpStatusCode.OK.ToString(),
-                Message = "Success",
-                Data = accounts
-            });
-        }
-
-        [HttpGet("{id}")]
-        public ActionResult GetById(string id)
-        {
-            var account = _accountRepository.GetById(id);
-            if (account == null)
-            {
-                return NotFound(new ResponseErrorsVM<string>
-                {
-                    Code = StatusCodes.Status404NotFound,
-                    Status = HttpStatusCode.NotFound.ToString(),
-                    Errors = "Account not found"
-                });
-            }
-
-            return Ok(new ResponseDataVM<Account>
-            {
-                Code = StatusCodes.Status200OK,
-                Status = HttpStatusCode.OK.ToString(),
-                Message = "Success",
-                Data = account
-            });
-        }
-
-        [HttpPost]
-        public ActionResult Insert(Account account)
-        {
-            if (account.EmployeeNIK == "" || account.EmployeeNIK.ToLower() == "string")
-            {
-                return BadRequest(new ResponseErrorsVM<string>
-                {
-                    Code = StatusCodes.Status400BadRequest,
-                    Status = HttpStatusCode.BadRequest.ToString(),
-                    Errors = "Value Cannot be Null or Default"
-                });
-            }
-            var insert = _accountRepository.Insert(account);
-            if (insert > 0)
-                return Ok(new ResponseDataVM<Account>
+                return Ok(new ResponseDataVM<string>
                 {
                     Code = StatusCodes.Status200OK,
                     Status = HttpStatusCode.OK.ToString(),
-                    Message = "Insert Success",
-                    Data = null
-                });
-            return BadRequest(new ResponseErrorsVM<string>
-            {
-                Code = StatusCodes.Status400BadRequest,
-                Status = HttpStatusCode.BadRequest.ToString(),
-                Errors = "Insert Failed / Lost Connection"
-            });
-        }
-        [HttpPut]
-        public ActionResult Update(Account account)
-        {
-            if (account.EmployeeNIK == "" || account.EmployeeNIK.ToLower() == "string")
-            {
-                return BadRequest(new ResponseErrorsVM<string>
-                {
-                    Code = StatusCodes.Status400BadRequest,
-                    Status = HttpStatusCode.BadRequest.ToString(),
-                    Errors = "Value Cannot be Null or Default"
+                    Message = "Login Success"
                 });
             }
-
-            var update = _accountRepository.Update(account);
-            if (update > 0) return Ok(new ResponseDataVM<Account>
-            {
-                Code = StatusCodes.Status200OK,
-                Status = HttpStatusCode.OK.ToString(),
-                Message = "Update Success",
-                Data = null
-            });
-
-            return BadRequest(new ResponseErrorsVM<string>
-            {
-                Code = StatusCodes.Status400BadRequest,
-                Status = HttpStatusCode.BadRequest.ToString(),
-                Errors = "Update Failed / Lost Connection"
-            });
-        }
-
-        [HttpDelete("{id}")]
-        public ActionResult Delete(string id)
-        {
-            var account = _accountRepository.GetById(id);
-
-            if (account == null)
-            {
-                return NotFound(new ResponseErrorsVM<string>
+                return BadRequest(new ResponseErrorsVM<string>
                 {
                     Code = StatusCodes.Status404NotFound,
                     Status = HttpStatusCode.NotFound.ToString(),
-                    Errors = "Account Not Found"
+                    Errors = "Login Failed"
                 });
-            }
+        }
 
-            var delete = _accountRepository.Delete(account);
-
-            if (delete > 0)
+        [HttpPost("Register")]
+        public ActionResult Register(RegisterVM registerVM)
+        {
+            var register = _repository.Register(registerVM);
+            if (register > 0)
             {
-                return Ok(new ResponseDataVM<Account>
+                return Ok(new ResponseDataVM<string>
                 {
                     Code = StatusCodes.Status200OK,
                     Status = HttpStatusCode.OK.ToString(),
-                    Message = "Delete Success",
-                    Data = null
+                    Message = "Insert Success"
                 });
             }
-
             return BadRequest(new ResponseErrorsVM<string>
             {
-                Code = StatusCodes.Status400BadRequest,
-                Status = HttpStatusCode.BadRequest.ToString(),
-                Errors = "Delete Failed / Lost Connection"
+                Code = StatusCodes.Status500InternalServerError,
+                Status = HttpStatusCode.InternalServerError.ToString(),
+                Errors = "Insert Failed"
             });
         }
     }
