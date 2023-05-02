@@ -62,15 +62,17 @@ namespace API.Base
         [HttpPost]
         public ActionResult Insert(TEntity entity)
         {
-            /*if (account.EmployeeNIK == "" || account.EmployeeNIK.ToLower() == "string")
+            // Cek apakah entity adalah Account dan apakah EmployeeNIK-nya null atau string kosong
+            if (entity is Account account && (string.IsNullOrEmpty(account.EmployeeNIK) || account.EmployeeNIK.ToLower() == "string"))
             {
                 return BadRequest(new ResponseErrorsVM<string>
                 {
                     Code = StatusCodes.Status400BadRequest,
                     Status = HttpStatusCode.BadRequest.ToString(),
-                    Errors = "Value Cannot be Null or Default"
+                    Errors = "Invalid Data NIK"
                 });
-            }*/
+            }
+
             var insert = _repository.Insert(entity);
             if (insert > 0)
                 return Ok(new ResponseDataVM<Account>
@@ -86,18 +88,20 @@ namespace API.Base
                 Errors = "Insert Failed / Lost Connection"
             });
         }
+
         [HttpPut]
         public ActionResult Update(TEntity entity)
         {
-            /*if (account.EmployeeNIK == "" || account.EmployeeNIK.ToLower() == "string")
+            // Cek apakah entity adalah Account dan apakah EmployeeNIK-nya null atau string kosong
+            if (entity is Account account && (string.IsNullOrEmpty(account.EmployeeNIK) || account.EmployeeNIK.ToLower() == "string"))
             {
                 return BadRequest(new ResponseErrorsVM<string>
                 {
                     Code = StatusCodes.Status400BadRequest,
                     Status = HttpStatusCode.BadRequest.ToString(),
-                    Errors = "Value Cannot be Null or Default"
+                    Errors = "Data Invalid"
                 });
-            }*/
+            }
 
             var update = _repository.Update(entity);
             if (update > 0) return Ok(new ResponseDataVM<Account>

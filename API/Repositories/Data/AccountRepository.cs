@@ -20,11 +20,15 @@ namespace API.Repositories.Data
             {
                 Name = registerVM.UniversityName
             };
+
+            //Sebelum insert lakukan pengecekan apakah universitas sudah ada apa belum
+            if (_context.Universities.Any(e => e.Name == registerVM.UniversityName))
+            {
+                throw new Exception("University tersebut sudah terdaftar");
+            }
             _context.Universities.Add(university);
             result = _context.SaveChanges();
 
-            //Sebelum insert lakukan pengecekan apakah universitas sudah ada apa belum
-            university.Id = _context.Universities.FirstOrDefault(x => x.Name == registerVM.UniversityName).Id;
             //insert to Education Table
             var education = new Education
             {
@@ -49,6 +53,19 @@ namespace API.Repositories.Data
                 PhoneNumber = registerVM.PhoneNumber,
 
             };
+
+            // cek apakah ada employee dengan first name yang sudah ada 
+            if (_context.Employees.Any(e => e.FirstName == registerVM.FirstName))
+            {
+                throw new Exception("Employee dengan first name tersebut sudah ada");
+            }
+
+            // Cek apakah email sudah terdaftar
+            if (_context.Employees.Any(e => e.Email == registerVM.Email))
+            {
+                throw new Exception("Email sudah terdaftar");
+            }
+
             _context.Employees.Add(employee);
             result += _context.SaveChanges();
 

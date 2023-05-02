@@ -1,4 +1,6 @@
-﻿namespace API.Repositories
+﻿using API.Models;
+
+namespace API.Repositories
 {
     public interface IGeneralRepository<TEntity, TKey>
     {
