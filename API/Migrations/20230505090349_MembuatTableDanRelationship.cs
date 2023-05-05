@@ -70,7 +70,7 @@ namespace API.Migrations
                         column: x => x.employee_nik,
                         principalTable: "tb_m_employees",
                         principalColumn: "nik",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -91,8 +91,7 @@ namespace API.Migrations
                         name: "FK_tb_m_educations_tb_m_universities_university_id",
                         column: x => x.university_id,
                         principalTable: "tb_m_universities",
-                        principalColumn: "id",
-                        onDelete: ReferentialAction.SetNull);
+                        principalColumn: "id");
                 });
 
             migrationBuilder.CreateTable(
@@ -132,17 +131,16 @@ namespace API.Migrations
                 {
                     table.PrimaryKey("PK_tb_tr_profilings", x => x.employee_nik);
                     table.ForeignKey(
-                        name: "FK_tb_tr_profilings_tb_m_accounts_employee_nik",
-                        column: x => x.employee_nik,
-                        principalTable: "tb_m_accounts",
-                        principalColumn: "employee_nik",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
                         name: "FK_tb_tr_profilings_tb_m_educations_education_id",
                         column: x => x.education_id,
                         principalTable: "tb_m_educations",
-                        principalColumn: "id",
-                        onDelete: ReferentialAction.SetNull);
+                        principalColumn: "id");
+                    table.ForeignKey(
+                        name: "FK_tb_tr_profilings_tb_m_employees_employee_nik",
+                        column: x => x.employee_nik,
+                        principalTable: "tb_m_employees",
+                        principalColumn: "nik",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
@@ -178,10 +176,10 @@ namespace API.Migrations
                 name: "tb_tr_profilings");
 
             migrationBuilder.DropTable(
-                name: "tb_m_roles");
+                name: "tb_m_accounts");
 
             migrationBuilder.DropTable(
-                name: "tb_m_accounts");
+                name: "tb_m_roles");
 
             migrationBuilder.DropTable(
                 name: "tb_m_educations");

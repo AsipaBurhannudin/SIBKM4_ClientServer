@@ -21,8 +21,8 @@ public class Education
 
     //Cardinality
     [JsonIgnore]
-    public University? University { get; set; }
+    public University? Universities { get; set; }
     [JsonIgnore]
-    public Profiling? Profiling { get; set; }
+    public Profiling? Profilings { get; set; }
 
 }

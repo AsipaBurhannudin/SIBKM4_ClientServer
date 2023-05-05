@@ -14,7 +14,7 @@ public class Profiling
 
     //Cardinality
     [JsonIgnore]
-    public Education? Education { get; set; }
+    public Education? Educations { get; set; }
     [JsonIgnore]
-    public Account? Account { get; set; }
+    public Employee? Employees { get; set; }
 }

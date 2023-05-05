@@ -28,7 +28,7 @@ namespace API.Migrations
                         .HasColumnType("char(5)")
                         .HasColumnName("employee_nik");
 
-                    b.Property<string>("password")
+                    b.Property<string>("Password")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)")
                         .HasColumnName("password");
@@ -201,75 +201,75 @@ namespace API.Migrations
 
             modelBuilder.Entity("API.Models.Account", b =>
                 {
-                    b.HasOne("API.Models.Employee", "Employee")
-                        .WithOne("Account")
+                    b.HasOne("API.Models.Employee", "Employees")
+                        .WithOne("Accounts")
                         .HasForeignKey("API.Models.Account", "EmployeeNIK")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                    b.Navigation("Employee");
+                    b.Navigation("Employees");
                 });
 
             modelBuilder.Entity("API.Models.AccountRole", b =>
                 {
-                    b.HasOne("API.Models.Account", "Account")
+                    b.HasOne("API.Models.Account", "Accounts")
                         .WithMany("AccountRoles")
                         .HasForeignKey("AccountNIK")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                    b.HasOne("API.Models.Role", "Role")
+                    b.HasOne("API.Models.Role", "Roles")
                         .WithMany("AccountRoles")
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Account");
+                    b.Navigation("Accounts");
 
-                    b.Navigation("Role");
+                    b.Navigation("Roles");
                 });
 
             modelBuilder.Entity("API.Models.Education", b =>
                 {
-                    b.HasOne("API.Models.University", "University")
+                    b.HasOne("API.Models.University", "Universities")
                         .WithMany("Educations")
-                        .HasForeignKey("UniversityId")
-                        .OnDelete(DeleteBehavior.SetNull);
+                        .HasForeignKey("UniversityId");
 
-                    b.Navigation("University");
+                    b.Navigation("Universities");
                 });
 
             modelBuilder.Entity("API.Models.Profiling", b =>
                 {
-                    b.HasOne("API.Models.Education", "Education")
-                        .WithOne("Profiling")
-                        .HasForeignKey("API.Models.Profiling", "EducationId")
-                        .OnDelete(DeleteBehavior.SetNull);
+                    b.HasOne("API.Models.Education", "Educations")
+                        .WithOne("Profilings")
+                        .HasForeignKey("API.Models.Profiling", "EducationId");
 
-                    b.HasOne("API.Models.Account", "Account")
-                        .WithOne("Profiling")
+                    b.HasOne("API.Models.Employee", "Employees")
+                        .WithOne("Profilings")
                         .HasForeignKey("API.Models.Profiling", "EmployeeNIK")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Account");
+                    b.Navigation("Educations");
 
-                    b.Navigation("Education");
+                    b.Navigation("Employees");
                 });
 
             modelBuilder.Entity("API.Models.Account", b =>
                 {
                     b.Navigation("AccountRoles");
-
-                    b.Navigation("Profiling");
                 });
 
             modelBuilder.Entity("API.Models.Education", b =>
                 {
-                    b.Navigation("Profiling");
+                    b.Navigation("Profilings");
                 });
 
             modelBuilder.Entity("API.Models.Employee", b =>
                 {
-                    b.Navigation("Account");
+                    b.Navigation("Accounts");
+
+                    b.Navigation("Profilings");
                 });
 
             modelBuilder.Entity("API.Models.Role", b =>

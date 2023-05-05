@@ -7,7 +7,7 @@ namespace API.Models;
 
 public class Account
 {
-    [Key, Column("employee_nik", TypeName ="char(5)")]
+    [Key, Column("employee_nik", TypeName = "char(5)")]
     public string EmployeeNIK { get; set; }
     [Column("password")]
     public string Password { get; set; }
@@ -16,9 +16,6 @@ public class Account
     [JsonIgnore]
     public ICollection<AccountRole>? AccountRoles { get; set; }
     [JsonIgnore]
-    public Employee? Employee { get; set; }
-    [JsonIgnore]
-    public Profiling? Profiling { get; set; }
-
+    public Employee? Employees { get; set; }
 
 }

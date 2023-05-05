@@ -17,7 +17,7 @@ public class AccountRole
 
     //Cardinality
     [JsonIgnore]
-    public Account? Account { get; set; }
+    public Account? Accounts { get; set; }
     [JsonIgnore]
-    public Role? Role { get; set; }
+    public Role? Roles { get; set; }
 }
