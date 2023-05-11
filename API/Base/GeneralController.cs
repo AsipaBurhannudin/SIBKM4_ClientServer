@@ -3,6 +3,7 @@ using API.Repositories;
 using API.Repositories.Data;
 using API.Repositories.Interface;
 using API.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
@@ -11,6 +12,7 @@ namespace API.Base
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class GeneralController<TRepository, TEntity, TKey> : ControllerBase
         where TRepository : IGeneralRepository<TEntity, TKey>
         where TEntity : class
@@ -122,35 +124,19 @@ namespace API.Base
         [HttpDelete("{key}")]
         public ActionResult Delete(TKey key)
         {
-            var results = _repository.GetByKey(key);
-
-            if (results == null)
-            {
-                return NotFound(new ResponseErrorsVM<string>
-                {
-                    Code = StatusCodes.Status404NotFound,
-                    Status = HttpStatusCode.NotFound.ToString(),
-                    Errors = "Account Not Found"
-                });
-            }
-
             var delete = _repository.Delete(key);
-
             if (delete > 0)
-            {
                 return Ok(new ResponseDataVM<TEntity>
                 {
                     Code = StatusCodes.Status200OK,
                     Status = HttpStatusCode.OK.ToString(),
-                    Message = "Delete Success",
-                    Data = null
+                    Message = "Delete Success"
                 });
-            }
 
             return BadRequest(new ResponseErrorsVM<string>
             {
-                Code = StatusCodes.Status400BadRequest,
-                Status = HttpStatusCode.BadRequest.ToString(),
+                Code = StatusCodes.Status500InternalServerError,
+                Status = HttpStatusCode.InternalServerError.ToString(),
                 Errors = "Delete Failed / Lost Connection"
             });
         }
