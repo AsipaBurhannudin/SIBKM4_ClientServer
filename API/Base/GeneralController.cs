@@ -1,10 +1,7 @@
 ﻿using API.Models;
 using API.Repositories;
-using API.Repositories.Data;
-using API.Repositories.Interface;
 using API.ViewModels;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 
@@ -27,7 +24,14 @@ namespace API.Base
         public ActionResult GetAll()
         {
             var results = _repository.GetAll();
-            // Handle ketika data tidak ada / kosong
+            //Handle ketika data tidak ada/ kosong
+            if (results == null)
+                return NotFound(new ResponseErrorsVM<string>
+                {
+                    Code = StatusCodes.Status404NotFound,
+                    Status = HttpStatusCode.NotFound.ToString(),
+                    Errors = "There are no data available"
+                });
 
             return Ok(new ResponseDataVM<IEnumerable<TEntity>>
             {
@@ -48,7 +52,7 @@ namespace API.Base
                 {
                     Code = StatusCodes.Status404NotFound,
                     Status = HttpStatusCode.NotFound.ToString(),
-                    Errors = "Account not found"
+                    Errors = "ID not found"
                 });
             }
 
