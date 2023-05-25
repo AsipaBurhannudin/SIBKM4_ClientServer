@@ -12,7 +12,6 @@ namespace API.Base
     [Authorize]
     public class GeneralController<TRepository, TEntity, TKey> : ControllerBase
         where TRepository : IGeneralRepository<TEntity, TKey>
-        where TEntity : class
     {
         protected readonly TRepository _repository;
         public GeneralController(TRepository repository)
