@@ -1,9 +1,7 @@
 ﻿using API.Models;
 
-namespace API.Repositories.Interface
+namespace API.Repositories.Interface;
+public interface IAccountRoleRepository : IGeneralRepository<AccountRole, int>
 {
-    public interface IAccountRoleRepository : IGeneralRepository<AccountRole, int>
-    {
-        IEnumerable<string> GetRolesByEmail(string email);
-    }
+    IEnumerable<string> GetRolesByEmail(string email);
 }

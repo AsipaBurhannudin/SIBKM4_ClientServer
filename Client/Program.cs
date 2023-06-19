@@ -1,7 +1,15 @@
+using API.Repositories.Interface;
+using Client.Repositories;
+using Client.Repositories.Data;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
+builder.Services.AddScoped<UniversityRepository>();
+builder.Services.AddScoped<EmployeeRepository>(); //kalau belum dipasang pasti akan (unable to resolve service)
+builder.Services.AddScoped<AccountRepository>(); //kalau belum dipasang pasti akan (unable to resolve service)
 
 var app = builder.Build();
 

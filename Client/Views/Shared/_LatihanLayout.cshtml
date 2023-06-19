@@ -6,6 +6,7 @@
     <title>@ViewData["Title"] - Client</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css" />
     <link rel="stylesheet" href="~/Client.styles.css" asp-append-version="true" />
 </head>
 <body>
@@ -123,9 +124,8 @@
     <div class="container">
         @RenderBody();
     </div>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/radar-chart@1.0.6/src/radar-chart.min.js"></script>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/LatihanAjax.js" asp-append-version="true"></script>
     @await RenderSectionAsync("LatihanAjax", required: false)

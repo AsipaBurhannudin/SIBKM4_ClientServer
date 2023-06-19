@@ -37,6 +37,33 @@ $.ajax({
     console.log(error);
 })
 
+//ready function
+$(document).ready(function () {
+    $('#tablePokemon').DataTable({
+        ajax: {
+            url: "https://pokeapi.co/api/v2/pokemon/",
+            dataSrc: 'results'
+        },
+        columns: [
+            {
+                data: "name",
+                render: function (data, type, row, meta) {
+                    return meta.row + meta.settings._iDisplayStart + 1;
+                }
+            },
+            { data: "name" },
+            {
+                data: "name",
+                render: function (data, type, row) {
+                    return `<button type="button" class="btn btn-primary" onclick="detail('${row.url}')" data-bs-toggle="modal" data-bs-target="#modalPoke">Detail</button>`;
+                }
+            }
+        ]
+    });
+});
+
+
+
 function detail(stringUrl) {
     $.ajax({
         url: stringUrl

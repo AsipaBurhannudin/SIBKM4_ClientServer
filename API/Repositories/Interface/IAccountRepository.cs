@@ -1,12 +1,9 @@
 ﻿using API.Models;
 using API.ViewModels;
 
-namespace API.Repositories.Interface
+namespace API.Repositories.Interface;
+public interface IAccountRepository : IGeneralRepository<Account, string>
 {
-    public interface IAccountRepository : IGeneralRepository<Account, string>
-    {
-        int Register(RegisterVM registerVM);
-
-        bool Login(LoginVM loginVM);
-    }
+    int Register(RegisterVM registerVM);
+    bool Login(LoginVM loginVM);
 }
