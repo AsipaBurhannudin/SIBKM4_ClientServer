@@ -1,15 +1,36 @@
-using API.Repositories.Interface;
 using Client.Repositories;
-using Client.Repositories.Data;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Net;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
-
-builder.Services.AddScoped<UniversityRepository>();
+builder.Services.AddSession();
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddScoped<UniversityRepository>(); //kalau belum dipasang pasti akan (unable to resolve service)
 builder.Services.AddScoped<EmployeeRepository>(); //kalau belum dipasang pasti akan (unable to resolve service)
-builder.Services.AddScoped<AccountRepository>(); //kalau belum dipasang pasti akan (unable to resolve service)
+builder.Services.AddScoped<AccountRepository>();
+
+// Configure JWT Authentication -> ini diambil dari JWT configuration Program.CS API sendiri
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+       .AddJwtBearer(options => {
+           options.RequireHttpsMetadata = false;
+           options.SaveToken = true;
+           options.TokenValidationParameters = new TokenValidationParameters
+           {
+               ValidateIssuer = true,
+               ValidateAudience = true,
+               ValidateLifetime = true,
+               ValidateIssuerSigningKey = true,
+               ValidIssuer = builder.Configuration["Jwt:Issuer"],
+               ValidAudience = builder.Configuration["Jwt:Audience"],
+               IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"])),
+               ClockSkew = TimeSpan.Zero
+           };
+       });
 
 var app = builder.Build();
 
@@ -26,10 +47,36 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+// Custom Error page
+app.UseStatusCodePages(async context => {
+    var response = context.HttpContext.Response;
+
+    if (response.StatusCode.Equals((int)HttpStatusCode.Unauthorized))
+    {
+        response.Redirect("/unauthorized");
+    }
+});
+
+app.UseSession();
+
+//Add JWToken to all incoming HTTP Request Header
+app.Use(async (context, next) =>
+{
+    var JWToken = context.Session.GetString("JWToken");
+
+    if (!string.IsNullOrEmpty(JWToken))
+    {
+        context.Request.Headers.Add("Authorization", "Bearer " + JWToken);
+    }
+
+    await next();
+});
+
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
+    pattern: "{controller=Home}/{action=index}/{id?}");
 
 app.Run();

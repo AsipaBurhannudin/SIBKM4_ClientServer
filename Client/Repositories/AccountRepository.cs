@@ -1,18 +1,16 @@
 ﻿using API.Models;
 using API.ViewModels;
 using Newtonsoft.Json;
-using System.Net.Http;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace Client.Repositories
 {
-    public class UniversityRepository
+    public class AccountRepository
     {
         private readonly string request;
         private readonly HttpClient httpClient;
 
-        public UniversityRepository(string request = "University/")
+        public AccountRepository(string request = "Account/")
         {
             this.request = request;
             httpClient = new HttpClient
@@ -21,63 +19,53 @@ namespace Client.Repositories
             };
         }
 
-        public async Task<ResponseDataVM<List<University>>> Get()
+        public async Task<ResponseDataVM<string>> Login(LoginVM login)
         {
-            ResponseDataVM<List<University>> entityVM = null;
+            ResponseDataVM<string> entityVM = null;
+            StringContent content = new StringContent(JsonConvert.SerializeObject(login), Encoding.UTF8, "application/json");
+            using (var response = httpClient.PostAsync(request + "login", content).Result) //localhost/api/university {method:post} -> content
+            {
+                string apiResponse = await response.Content.ReadAsStringAsync();
+                entityVM = JsonConvert.DeserializeObject<ResponseDataVM<string>>(apiResponse);
+            }
+            return entityVM;
+        }
+
+        public async Task<ResponseDataVM<List<Account>>> Get()
+        {
+            ResponseDataVM<List<Account>> entityVM = null;
             using (var response = await httpClient.GetAsync(request))
             {
                 string apiResponse = await response.Content.ReadAsStringAsync();
-                entityVM = JsonConvert.DeserializeObject<ResponseDataVM<List<University>>>(apiResponse);
+                entityVM = JsonConvert.DeserializeObject<ResponseDataVM<List<Account>>>(apiResponse);
             }
             return entityVM;
         }
 
-        public async Task<ResponseDataVM<University>> Post(University university)
+        public async Task<ResponseDataVM<string>> Post(Account account)
         {
-            ResponseDataVM<University> entityVM = null;
-            StringContent content = new StringContent(JsonConvert.SerializeObject(university), Encoding.UTF8, "application/json");
-            using (var response = await httpClient.PostAsync(request, content))
+            ResponseDataVM<string> entityVM = null;
+            StringContent content = new StringContent(JsonConvert.SerializeObject(account), Encoding.UTF8, "application/json");
+            using (var response = httpClient.PostAsync(request, content).Result) //localhost/api/university {method:post} -> content
             {
                 string apiResponse = await response.Content.ReadAsStringAsync();
-                entityVM = JsonConvert.DeserializeObject<ResponseDataVM<University>>(apiResponse);
+                entityVM = JsonConvert.DeserializeObject<ResponseDataVM<string>>(apiResponse);
             }
             return entityVM;
         }
 
-        public async Task<ResponseDataVM<University>> Get(int id)
+        public async Task<ResponseDataVM<Account>> Get(int id)
         {
-            ResponseDataVM<University> entity = null;
+            ResponseDataVM<Account> entity = null;
 
             using (var response = await httpClient.GetAsync(request + id))
             {
                 string apiResponse = await response.Content.ReadAsStringAsync();
-                entity = JsonConvert.DeserializeObject<ResponseDataVM<University>>(apiResponse);
+                entity = JsonConvert.DeserializeObject<ResponseDataVM<Account>>(apiResponse);
             }
             return entity;
         }
 
-        public async Task<ResponseDataVM<University>> Put(int id, University university)
-        {
-            ResponseDataVM<University> entityVM = null;
-            StringContent content = new StringContent(JsonConvert.SerializeObject(university), Encoding.UTF8, "application/json");
-            using (var response = await httpClient.PutAsync(request, content))
-            {
-                string apiResponse = await response.Content.ReadAsStringAsync();
-                entityVM = JsonConvert.DeserializeObject<ResponseDataVM<University>>(apiResponse);
-            }
-            return entityVM;
-        }
 
-        public async Task<ResponseDataVM<University>> Delete(int id)
-        {
-            ResponseDataVM<University> entityVM = null;
-
-            using (var response = await httpClient.DeleteAsync(request + id))
-            {
-                string apiResponse = await response.Content.ReadAsStringAsync();
-                entityVM = JsonConvert.DeserializeObject<ResponseDataVM<University>>(apiResponse);
-            }
-            return entityVM;
-        }
     }
 }

@@ -1,0 +1,14 @@
+﻿/* login.css */
+.login-box .form-control {
+    height: 45px; /* Ubah ukuran tinggi sesuai kebutuhan */
+    font-size: 25px; /* Ubah ukuran font sesuai kebutuhan */
+    width: max-content;
+}
+
+.login-box .btn-primary {
+    width: 100%; /* Lebar tombol login akan mengisi seluruh kolom */
+}
+
+.login-box .login-card-body {
+    text-align: center; /* Mengatur teks login ke tengah */
+}
