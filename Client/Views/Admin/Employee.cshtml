@@ -1,0 +1,53 @@
+﻿@{
+    ViewData["Title"] = "Employee";
+    Layout = "_AdminLayout";
+}
+
+<h1>Employee</h1>
+
+<table class="table table-bordered table-hover" id="tblEmployee">
+    <thead class="thead-dark">
+        <tr>
+            <th class="text-center">No</th>
+            <th class="text-center">NIK</th>
+            <th class="text-center">FirstName</th>
+            <th class="text-center">LastName</th>
+            <th class="text-center">BirthDate</th>
+            <th class="text-center">Gender</th>
+            <th class="text-center">Hiring</th>
+            <th class="text-center">Email</th>
+            <th class="text-center">Phone</th>
+            <th class="text-center">Action</th>
+        </tr>
+    </thead>
+    <tbody id="tbodyEmployee">
+    </tbody>
+</table>
+
+<!-- Modal -->
+<div class="modal fade" id="modalEmp" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalTitle">Modal title</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-4">
+                        <img id="pokeImage" src="" alt="Pokemon Image" style="width: 150px; height: auto;">
+                    </div>
+                    <!-- Add other employee details here -->
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section EmployeeData{
+    <script src="~/js/EmployeeData.js"></script>
+}

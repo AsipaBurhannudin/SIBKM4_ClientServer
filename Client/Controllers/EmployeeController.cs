@@ -14,6 +14,7 @@ namespace Client.Controllers
         {
             this.repository = repository;
         }
+
         public async Task<IActionResult> Index()
         {
             var results = await repository.Get();
